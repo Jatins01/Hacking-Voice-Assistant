@@ -1,9 +1,9 @@
 from voice import speak, takeCommand, wishMe
 from phishing_detector import check_url_phishing
 from wifi_audit import scan_wifi_networks
-from port_scanner import run_nmap_scan, search_exploits
+from port_scanner import run_nmap_scan
 from privacy_mode import start_privacy_mode
-
+from gemini_ai import ask_ai
 if __name__ == "__main__":
     wishMe()
     while True:
@@ -27,15 +27,16 @@ if __name__ == "__main__":
             ip = input("Target IP: ")
             speak("Scanning open ports with Nmap...")
             ports_services = run_nmap_scan(ip)
+
             if not ports_services:
                 speak("No open ports found or scan failed.")
                 continue
 
             speak(f"Found {len(ports_services)} open ports.")
             for port, service in ports_services.items():
-                speak(f"Checking for exploits in {service}...")
-                exploits = search_exploits(service)
-                print(f"\n--- Exploits for {service} (port {port}) ---\n{exploits}")
+                speak(f"Port {port} is open and running {service}.")
+                print(f"Port {port} is open and running {service}.")
+
 
         elif 'privacy mode' in query:
             speak("Enabling privacy mode. Your IP will change every 3 seconds.")
@@ -44,6 +45,9 @@ if __name__ == "__main__":
         elif 'exit' in query or 'stop' in query:
             speak("Goodbye! Have a nice day.")
             break
-
+        
         else:
-            speak("Command not recognized. Please try again.")
+            speak("Hello! How can I assist you today?")
+            user_query = takeCommand().lower()
+            response = ask_ai(user_query)
+            speak(response)
