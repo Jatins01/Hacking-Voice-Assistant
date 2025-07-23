@@ -20,18 +20,26 @@ def wishMe():
         speak("Good Evening!")
     speak("I am HackSpeak. Please tell me how may I help you")
 
+import speech_recognition as sr
+
 def takeCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening...")
-        r.pause_threshold = 1
+        r.energy_threshold = 300  
+        r.pause_threshold = 1.2   
+        r.dynamic_energy_threshold = True
         audio = r.listen(source)
 
     try:
         print("Recognizing...")
         query = r.recognize_google(audio, language='en-in')
-        print(f"User said: {query}\n")
-    except Exception as e:
-        print("Say that again please...")
+        print(f"User said: {query}")
+    except sr.UnknownValueError:
+        print("Sorry, I didn't catch that. Please say it again.")
         return "None"
+    except sr.RequestError:
+        print("Could not request results from Google Speech Recognition.")
+        return "None"
+
     return query

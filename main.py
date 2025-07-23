@@ -4,6 +4,7 @@ from wifi_audit import scan_wifi_networks
 from port_scanner import run_nmap_scan
 from privacy_mode import start_privacy_mode
 from gemini_ai import ask_ai
+
 if __name__ == "__main__":
     wishMe()
     while True:
