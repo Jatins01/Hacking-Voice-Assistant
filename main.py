@@ -4,6 +4,8 @@ from wifi_audit import scan_wifi_networks
 from port_scanner import run_nmap_scan
 from privacy_mode import start_privacy_mode
 from gemini_ai import ask_ai
+from arp_spoof_detector import start_arp_spoof_detector
+from metadata_cleaner import remove_metadata
 
 if __name__ == "__main__":
     wishMe()
@@ -40,12 +42,21 @@ if __name__ == "__main__":
 
 
         elif 'privacy mode' in query:
-            speak("Enabling privacy mode. Your IP will change every 3 seconds.")
+            speak("Activating privacy mode for 10 minutes.")
             start_privacy_mode()
 
         elif 'exit' in query or 'stop' in query:
             speak("Goodbye! Have a nice day.")
             break
+        
+        elif 'arp detect' in query:
+            speak("Starting ARP spoof detection. Press Ctrl+C to stop.")
+            start_arp_spoof_detector()
+
+        elif 'clean metadata' in query:
+            speak("Please enter the image file path to clean.")
+            path = input("Image file path: ")
+            remove_metadata(path)
         
         else:
             speak("Hello! How can I assist you today?")

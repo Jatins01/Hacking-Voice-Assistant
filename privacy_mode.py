@@ -3,15 +3,6 @@ import time
 import threading
 import requests
 
-def change_ip():
-    try:
-        adapter_name = "Wi-Fi"  
-        subprocess.call(f"netsh interface set interface \"{adapter_name}\" disable", shell=True)
-        time.sleep(1)
-        subprocess.call(f"netsh interface set interface \"{adapter_name}\" enable", shell=True)
-    except Exception as e:
-        print(f"Failed to change IP: {e}")
-
 def get_public_ip():
     try:
         response = requests.get("https://api.ipify.org")
@@ -19,12 +10,29 @@ def get_public_ip():
     except:
         return "Unable to retrieve IP"
 
-def start_privacy_mode():
-    def ip_loop():
-        while True:
-            change_ip()
-            ip = get_public_ip()
-            print(f"[Privacy Mode] Public IP: {ip}")
-            time.sleep(3)
+def connect_vpn():
+    try:
+        subprocess.call("windscribe connect", shell=True)
+        time.sleep(3)
+        print("[Privacy Mode] ✅ VPN connected.")
+    except Exception as e:
+        print(f"[Privacy Mode] ❌ VPN connection failed: {e}")
 
-    threading.Thread(target=ip_loop, daemon=True).start()
+def disconnect_vpn():
+    try:
+        subprocess.call("windscribe disconnect", shell=True)
+        print("[Privacy Mode] 🔓 VPN disconnected.")
+    except Exception as e:
+        print(f"[Privacy Mode] ❌ VPN disconnection failed: {e}")
+
+def start_privacy_mode(duration=10):
+    def vpn_loop():
+        print("[Privacy Mode] 🌐 Original IP:", get_public_ip())
+        connect_vpn()
+        print("[Privacy Mode] 🧭 New IP:", get_public_ip())
+        print(f"[Privacy Mode] 🔐 Active for {duration} minutes.")
+        time.sleep(duration * 60)
+        disconnect_vpn()
+        print("[Privacy Mode] ⛔ Privacy mode ended.")
+
+    threading.Thread(target=vpn_loop, daemon=True).start()
